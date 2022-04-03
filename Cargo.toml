@@ -1,0 +1,24 @@
+[package]
+name = "s3rver"
+version = "0.0.0"
+edition = "2021"
+authors = ["Mikkel Kroman <mk@maero.dk>"]
+description = "A caching web server for serving data stored in object storage"
+repository = "https://github.com/mkroman/s3rver"
+license = "MIT OR Apache-2.0"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "3.1.0", features = ["derive", "env"] }
+aws-config = "0.9.0"
+aws-sdk-s3 = "0.9.0"
+aws-types = "0.9.0"
+miette = { version = "4.3.0", features = ["fancy"] }
+opentelemetry = { version = "0.17", features = ["rt-tokio"] }
+opentelemetry-jaeger = { version = "0.16", features = ["rt-tokio"] }
+thiserror = "1.0"
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1.32"
+tracing-error = "0.2"
+tracing-opentelemetry = "0.17"
+tracing-subscriber = { version = "0.3.10", features = ["env-filter", "registry"] }
