@@ -10,6 +10,7 @@ use tracing_subscriber::EnvFilter;
 
 mod cli;
 mod error;
+mod http;
 mod s3;
 
 pub use error::Error;
@@ -55,13 +56,27 @@ async fn main() -> Result<()> {
     let opts = cli::Opts::parse();
     init_tracing(opts.tracing_opts)?;
 
+    let remote = s3::Remote::try_from(opts.remote);
     let shared_config = aws_config::load_from_env().await;
     trace!("loaded config");
     let client = s3::init(&shared_config);
 
-    debug!(buckets = ?client.list_buckets().send().await, "reading buckets");
+    trace!(?remote, "using remote");
+    let bucket_names = client
+        .list_buckets()
+        .send()
+        .await
+        .map_err(|err| Error::AwsS3Error(err.into()))?
+        .buckets
+        .unwrap()
+        .iter()
+        .filter_map(|b| b.name().map(String::from))
+        .collect::<Vec<_>>();
+    debug!(buckets = ?bucket_names, "reading buckets");
 
     println!("Hello, world!");
+
+    http::start_server().await;
 
     Ok(())
 }

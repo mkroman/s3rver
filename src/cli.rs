@@ -1,14 +1,15 @@
 use clap::Parser;
+use url::Url;
 
 #[derive(Parser, Debug)]
 #[clap(author, about, version)]
 pub struct Opts {
-    /// The name of the bucket to serve
-    #[clap(short, long)]
-    pub bucket_name: String,
-
     #[clap(flatten)]
     pub tracing_opts: TracingOpts,
+
+    /// The s3 remote
+    #[clap()]
+    pub remote: Url,
 }
 
 #[derive(Parser, Debug)]
